@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<ws:definitions name="CustomerCurrentBalance"
+                xmlns:ws="http://schemas.xmlsoap.org/wsdl/"
+                xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+                xmlns:xs="http://www.w3.org/2001/XMLSchema"
+                xmlns:tns="http://pensionsoft.ru/schemas/rostelecom/ccstest/"
+                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                targetNamespace="http://pensionsoft.ru/schemas/rostelecom/ccstest/"
+                xsi:schemaLocation="
+                           http://pensionsoft.ru/schemas/rostelecom/ccstest/
+                           ccstest.xsd">
+                <!-- todo: fix url -->
+    <ws:types>
+        <xs:schema targetNamespace="http://pensionsoft.ru/schemas/rostelecom/ccstest/">
+            <!-- todo: check whether need it -->
+            <xs:include schemaLocation="ccstest.xsd"/>
+            <xs:element name="CustomerCurrentBalanceRq" type="tns:CustomerCurrentBalanceRqType"/>
+            <xs:element name="CustomerCurrentBalanceRs" type="tns:CustomerCurrentBalanceRsType"/>
+            <!-- todo: check whether need it, SOAPFault -->
+            <xs:element name="Fault" type="tns:FaultType"/>
+        </xs:schema>
+    </ws:types>
+
+    <ws:message name="CustomerCurrentBalanceRq">
+        <ws:part name="request" element="tns:CustomerCurrentBalanceRq"/>
+    </ws:message>
+    <ws:message name="CustomerCurrentBalanceRs">
+        <ws:part name="response" element="tns:CustomerCurrentBalanceRs"/>
+    </ws:message>
+    <ws:message name="CustomerCurrentBalanceFault">
+        <ws:part name="fault" element="tns:Fault"/>
+    </ws:message>
+
+    <ws:portType name="CustomerCurrentBalancePortType">
+        <ws:operation name="CustomerCurrentBalance">
+            <ws:input message="tns:CustomerCurrentBalanceRq"/>
+            <ws:output message="tns:CustomerCurrentBalanceRs"/>
+            <ws:fault name="Fault" message="tns:CustomerCurrentBalanceFault"/>
+        </ws:operation>
+    </ws:portType>
+
+    <ws:binding name="CustomerCurrentBalanceBinding" type="tns:CustomerCurrentBalancePortType">
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+        <ws:operation name="CustomerCurrentBalance">
+            <soap:operation soapAction="http://pensionsoft.ru/schemas/rostelecom/ccstest/CustomerCurrentBalance"/>
+            <ws:input><soap:body use="literal"/></ws:input>
+            <ws:output><soap:body use="literal"/></ws:output>
+        </ws:operation>
+    </ws:binding>
+
+    <ws:service name="CustomerCurrentBalanceService">
+        <ws:documentation>Запрос текущего баланса абонента</ws:documentation>
+        <ws:port name="CustomerCurrentBalancePort" binding="tns:CustomerCurrentBalanceBinding">
+            <soap:address location="http://localhost:7001/ccstest-ws-gateway/"/>
+        </ws:port>
+    </ws:service>
+</ws:definitions>

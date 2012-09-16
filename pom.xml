@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>ru.pensionsoft.rostelecom.ccstest</groupId>
+    <artifactId>ccstest-parent</artifactId>
+    <version>1.0</version>
+    <packaging>pom</packaging>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <ccstest.spring.version>3.0.7.RELEASE</ccstest.spring.version>
+        <ccstest.camel.version>2.9.3</ccstest.camel.version>
+        <ccstest.cxf.version>2.5.5</ccstest.cxf.version>
+    </properties>
+
+    <modules>
+        <module>ccstest-ws-gateway</module>
+        <module>ccstest-ext-auth-iface</module>
+        <module>ccstest-ext-auth-ejb</module>
+        <module>ccstest-customer-adapter</module>
+        <module>ccstest-personal-account-adapter</module>
+        <module>ccstest-dist-ear</module>
+        <module>ccstest-ws-gateway-war</module>
+        <module>ccstest-customer-adapter-rar</module>
+        <module>ccstest-personal-account-adapter-rar</module>
+        <module>ccstest-common</module>
+        <module>ccstest-ws-gateway-iface</module>
+    </modules>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.1</version>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    
+</project>

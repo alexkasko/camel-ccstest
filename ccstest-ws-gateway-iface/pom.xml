@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>ccstest-parent</artifactId>
+        <groupId>ru.pensionsoft.rostelecom.ccstest</groupId>
+        <version>1.0</version>
+    </parent>
+    <artifactId>ccstest-ws-gateway-iface</artifactId>
+    <packaging>jar</packaging>
+    <name>Сatalog of Сanonical Services, WS Gateway Interfaces Library</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+            <version>2.6</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.cxf</groupId>
+                <artifactId>cxf-codegen-plugin</artifactId>
+                <version>${ccstest.cxf.version}</version>
+                <executions>
+                    <execution>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>wsdl2java</goal>
+                        </goals>
+                        <configuration>
+                            <sourceRoot>${project.basedir}/target/generated-sources/src/main/java</sourceRoot>
+                            <wsdlOptions>
+                                <wsdlOption>
+                                    <wsdl>${basedir}/src/main/resources/wsdl/ccstest.wsdl</wsdl>
+                                    <wsdlLocation>\"\"</wsdlLocation>
+                                    <extraargs>
+                                        <extraarg>-impl</extraarg>
+                                        <extraarg>-xjc,-Xcommons-lang</extraarg>
+                                        <extraarg>-xjc,-Xvalue-constructor</extraarg>
+                                        <extraarg>-xjc,-Xdefault-value</extraarg>
+                                        <extraarg>-xjc,-Xfluent-api</extraarg>
+                                        <extraarg>-xjc,-Xof-ns</extraarg>
+                                    </extraargs>
+                                </wsdlOption>
+                            </wsdlOptions>
+                        </configuration>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                    	<groupId>org.jvnet.jaxb2_commons</groupId>
+                    	<artifactId>jaxb2-commons-lang</artifactId>
+                    	<version>2.3</version>
+                    </dependency>
+                    <dependency>
+                    	<groupId>org.jvnet.jaxb2_commons</groupId>
+                    	<artifactId>jaxb2-value-constructor</artifactId>
+                    	<version>3.0</version>
+                    </dependency>
+                    <dependency>
+                    	<groupId>org.jvnet.jaxb2_commons</groupId>
+                    	<artifactId>jaxb2-default-value</artifactId>
+                    	<version>1.1</version>
+                    </dependency>
+                    <dependency>
+                    	<groupId>org.jvnet.jaxb2_commons</groupId>
+                    	<artifactId>jaxb2-fluent-api</artifactId>
+                    	<version>3.0</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>${project.groupId}</groupId>
+                        <artifactId>ccstest-jaxb-of-ns-plugin</artifactId>
+                        <version>${project.version}</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+        </plugins>
+    </build>
+
+
+</project>
