@@ -18,35 +18,88 @@
            http://camel.apache.org/schema/cxf
            http://camel.apache.org/schema/cxf/camel-cxf.xsd">
 
-    <!-- spring config -->
+    <!-- spring -->
     <context:component-scan base-package="ru.pensionsoft.rostelecom.ccstest.gateway" use-default-filters="false">
         <context:include-filter type="annotation" expression="org.springframework.stereotype.Service"/>
     </context:component-scan>
 
-    <!-- cxf config -->
+    <!-- cxf -->
     <import resource="classpath:META-INF/cxf/cxf.xml"/>
     <import resource="classpath:META-INF/cxf/cxf-servlet.xml"/>
-
     <cxf:cxfEndpoint id="customerCurrentBalanceEndpoint"
                      address="/CustomerCurrentBalanceService"
                      serviceClass="ru.pensionsoft.schemas.rostelecom.ccstest.CustomerCurrentBalancePortType"
                      serviceName="foo:CustomerCurrentBalanceService"
                      wsdlURL="classpath:/wsdl/ccstest.wsdl"/>
+    <bean id="inputMessageContentListTransformer" class="ru.pensionsoft.rostelecom.ccstest.common.InputMessageContentListTransformer"/>
+    <bean id="outputMessageContentListTransformer" class="ru.pensionsoft.rostelecom.ccstest.common.OutputMessageContentListTransformer"/>
 
-    <!-- camel config -->
+    <!-- JMS -->
     <jee:jndi-lookup id="jmsConnectionFactory" jndi-name="weblogic.examples.ejb30.QueueConnectionFactory" />
-
-    <cm:camelContext id="camel">
-        <cm:routeBuilder ref="wsRouteBuilder"/>
-    </cm:camelContext>
     <bean id="jms" class="org.apache.camel.component.jms.JmsComponent">
         <property name="connectionFactory" ref="jmsConnectionFactory"/>
-        <property name="destinationResolver" ref="jmsDestinationResolver" />
-    </bean>
-    <bean id="jmsDestinationResolver" class="org.springframework.jms.support.destination.JndiDestinationResolver">
-        <property name="jndiTemplate">
-            <bean class="org.springframework.jndi.JndiTemplate"/>
+        <property name="destinationResolver">
+            <bean id="jmsDestinationResolver" class="org.springframework.jms.support.destination.JndiDestinationResolver">
+                <property name="jndiTemplate">
+                    <bean id="jndiTemplate" class="org.springframework.jndi.JndiTemplate"/>
+                </property>
+            </bean>
         </property>
     </bean>
+
+    <!-- JAXB -->
+    <bean id="jaxbInput" class="ru.pensionsoft.rostelecom.ccstest.common.JaxbDataFormatFactory">
+        <constructor-arg value="ru.pensionsoft.schemas.rostelecom.ccstest.CustomerCurrentBalanceRqType"/>
+    </bean>
+    <bean id="jaxbOutput" class="ru.pensionsoft.rostelecom.ccstest.common.JaxbDataFormatFactory">
+        <constructor-arg value="ru.pensionsoft.schemas.rostelecom.ccstest.CustomerCurrentBalanceRsType"/>
+    </bean>
+
+    <!-- Camel -->
+    <!-- components -->
+    <bean id="jsonHeaderAggregationStrategy" class="ru.pensionsoft.rostelecom.ccstest.common.JsonHeaderAggregationStrategy">
+        <constructor-arg value="ccstest_roles"/>
+    </bean>
+    <jee:remote-slsb id="externalAuthorizationService"
+                     business-interface="ru.pensionsoft.rostelecom.ccstest.ext.auth.ExternalAuthorizationService"
+                     jndi-name="externalAuthorizationService#ru.pensionsoft.rostelecom.ccstest.ext.auth.ExternalAuthorizationService"/>
+    <!-- route -->
+    <camelContext id="camel" xmlns="http://camel.apache.org/schema/spring">
+        <route>
+            <from uri="cxf:bean:customerCurrentBalanceEndpoint"/>
+            <bean ref="inputMessageContentListTransformer"/>
+            <setHeader headerName="ccstest_systemId"><simple>${body.context.systemId}</simple></setHeader>
+            <setHeader headerName="ccstest_userLogin"><simple>${body.context.userLogin}</simple></setHeader>
+            <enrich uri="bean:externalAuthorizationService?method=roles(${header.ccstest_systemId},${header.ccstest_userLogin})"
+                    strategyRef="jsonHeaderAggregationStrategy"/>
+            <setHeader headerName="ccstest_content">
+                <javaScript>(function() {
+                    if(request.body.customerEntityId) return 'customer'
+                    if(request.body.personalAccountEntityId) return 'personal_account'
+                    return 'UNKNOWN'
+                })()</javaScript>
+            </setHeader>
+            <marshal ref="jaxbInput"/>
+            <choice>
+                <when>
+                    <simple>${header[ccstest_content]} == 'customer'</simple>
+                    <inOut uri="jms:customerQueue"/>
+                    <unmarshal ref="jaxbOutput"/>
+                    <bean ref="outputMessageContentListTransformer"/>
+                </when>
+                <when>
+                    <simple>${header[ccstest_content]} == 'personal_account'</simple>
+                    <inOut uri="jms:personalAccountQueue"/>
+                    <unmarshal ref="jaxbOutput"/>
+                    <bean ref="outputMessageContentListTransformer"/>
+                </when>
+                <otherwise>
+                    <unmarshal ref="jaxbInput"/>
+                    <bean ref="outputMessageContentListTransformer"/>
+                </otherwise>
+            </choice>
+
+        </route>
+    </camelContext>
 
 </beans>

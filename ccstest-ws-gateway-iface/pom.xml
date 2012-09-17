@@ -10,9 +10,10 @@
     </parent>
     <artifactId>ccstest-ws-gateway-iface</artifactId>
     <packaging>jar</packaging>
-    <name>Сatalog of Сanonical Services, WS Gateway Interfaces Library</name>
+    <name>СCS WS Gateway Interfaces Library</name>
 
     <dependencies>
+        <!-- provided -->
         <dependency>
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
@@ -45,7 +46,6 @@
                                         <extraarg>-xjc,-Xvalue-constructor</extraarg>
                                         <extraarg>-xjc,-Xdefault-value</extraarg>
                                         <extraarg>-xjc,-Xfluent-api</extraarg>
-                                        <extraarg>-xjc,-Xof-ns</extraarg>
                                     </extraargs>
                                 </wsdlOption>
                             </wsdlOptions>
@@ -72,11 +72,6 @@
                     	<groupId>org.jvnet.jaxb2_commons</groupId>
                     	<artifactId>jaxb2-fluent-api</artifactId>
                     	<version>3.0</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>${project.groupId}</groupId>
-                        <artifactId>ccstest-jaxb-of-ns-plugin</artifactId>
-                        <version>${project.version}</version>
                     </dependency>
                 </dependencies>
             </plugin>

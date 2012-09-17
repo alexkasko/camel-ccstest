@@ -51,7 +51,7 @@
     <ws:service name="CustomerCurrentBalanceService">
         <ws:documentation>Запрос текущего баланса абонента</ws:documentation>
         <ws:port name="CustomerCurrentBalancePort" binding="tns:CustomerCurrentBalanceBinding">
-            <soap:address location="http://localhost:7001/ccstest-ws-gateway/"/>
+            <soap:address location="http://localhost:7001/ccstest-ws-gateway-war/CustomerCurrentBalanceService"/>
         </ws:port>
     </ws:service>
 </ws:definitions>

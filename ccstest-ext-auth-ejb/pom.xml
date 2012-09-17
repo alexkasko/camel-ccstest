@@ -10,14 +10,16 @@
     </parent>
     <artifactId>ccstest-ext-auth-ejb</artifactId>
     <packaging>ejb</packaging>
-    <name>Сatalog of Сanonical Services, External Authorization Test Implementation</name>
+    <name>СCS External Authorization Test Implementation</name>
 
     <dependencies>
+        <!-- ccstest -->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>ccstest-ext-auth-iface</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <!-- provided -->
         <dependency>
             <groupId>org.apache.geronimo.specs</groupId>
             <artifactId>geronimo-ejb_3.0_spec</artifactId>

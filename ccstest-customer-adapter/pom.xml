@@ -9,9 +9,10 @@
         <version>1.0</version>
     </parent>
     <artifactId>ccstest-customer-adapter</artifactId>
-    <name>Сatalog of Сanonical Services, Customer Balance JCA Resource Adapter Implementation</name>
+    <name>СCS Customer Balance JCA Resource Adapter Implementation</name>
 
     <dependencies>
+        <!-- ccstest -->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>ccstest-common</artifactId>
@@ -22,12 +23,7 @@
             <artifactId>ccstest-ws-gateway-iface</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-            <version>${ccstest.spring.version}</version>
-            <scope>provided</scope>
-        </dependency>
+        <!-- camel -->
         <dependency>
             <groupId>org.apache.camel</groupId>
             <artifactId>camel-core</artifactId>
@@ -37,6 +33,19 @@
             <groupId>org.apache.camel</groupId>
             <artifactId>camel-jaxb</artifactId>
             <version>${ccstest.camel.version}</version>
+        </dependency>
+        <!-- provided -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>${ccstest.spring.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+        	<groupId>com.google.guava</groupId>
+        	<artifactId>guava</artifactId>
+        	<version>${ccstest.guava.version}</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 

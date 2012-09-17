@@ -3,10 +3,11 @@ package ru.pensionsoft.rostelecom.ccstest.rar.pa;
 import org.springframework.jca.context.SpringContextResourceAdapter;
 
 /**
- * User: alexey
+ * JCA resource adapter, added for proper classpath scanning on context init
+ *
+ * @author alexey
  * Date: 9/16/12
  */
 
-// used for proper classpath scanning on context init
 public class PersonalAccountResourceAdapter extends SpringContextResourceAdapter {
 }

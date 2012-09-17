@@ -10,9 +10,10 @@
     </parent>
     <artifactId>ccstest-ext-auth-iface</artifactId>
     <packaging>jar</packaging>
-    <name>Сatalog of Сanonical Services, External Authorization Interfaces</name>
+    <name>СCS External Authorization Interfaces</name>
 
     <dependencies>
+        <!-- provided -->
         <dependency>
         	<groupId>org.apache.geronimo.specs</groupId>
         	<artifactId>geronimo-ejb_3.0_spec</artifactId>

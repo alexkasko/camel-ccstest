@@ -10,7 +10,7 @@
     </parent>
     <artifactId>ccstest-personal-account-adapter-rar</artifactId>
     <packaging>jar</packaging>
-    <name>Сatalog of Сanonical Services, Personal Account Balance JCA Resource Adapter</name>
+    <name>СCS Personal Account Balance JCA Resource Adapter</name>
 
     <dependencies>
         <dependency>

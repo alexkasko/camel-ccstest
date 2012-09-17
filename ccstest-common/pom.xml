@@ -10,9 +10,10 @@
     </parent>
     <artifactId>ccstest-common</artifactId>
     <packaging>jar</packaging>
-    <name>Сatalog of Сanonical Services, Common Library</name>
+    <name>СCS Common Library</name>
 
     <dependencies>
+        <!-- provided -->
         <dependency>
             <groupId>org.apache.cxf</groupId>
             <artifactId>cxf-api</artifactId>
@@ -47,6 +48,12 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-beans</artifactId>
             <version>${ccstest.spring.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+        	<groupId>com.google.guava</groupId>
+        	<artifactId>guava</artifactId>
+        	<version>${ccstest.guava.version}</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

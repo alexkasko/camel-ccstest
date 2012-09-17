@@ -7,14 +7,20 @@ import ru.pensionsoft.schemas.rostelecom.ccstest.CustomerCurrentBalanceRsType;
 import java.math.BigDecimal;
 
 /**
- * User: alexey
+ * Data source response transformer
+ *
+ * @author alexey
  * Date: 9/16/12
  */
 
 @Service("responseTransformer")
 public class ResponseTransformer {
+    /**
+     * @param data data from source
+     * @return JAXB response
+     */
     @Handler
-    public CustomerCurrentBalanceRsType transform(BigDecimal resp) {
-        return new CustomerCurrentBalanceRsType(resp);
+    public CustomerCurrentBalanceRsType transform(BigDecimal data) {
+        return new CustomerCurrentBalanceRsType(data);
     }
 }

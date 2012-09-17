@@ -10,9 +10,10 @@
     </parent>
     <artifactId>ccstest-customer-adapter-rar</artifactId>
     <packaging>jar</packaging>
-    <name>Сatalog of Сanonical Services, Customer Balance JCA Resource Adapter</name>
+    <name>СCS Customer Balance JCA Resource Adapter</name>
 
     <dependencies>
+        <!-- provided -->
         <dependency>
             <groupId>org.apache.geronimo.specs</groupId>
             <artifactId>geronimo-j2ee-connector_1.5_spec</artifactId>

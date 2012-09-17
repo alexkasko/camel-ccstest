@@ -10,9 +10,10 @@
     </parent>
     <artifactId>ccstest-dist-ear</artifactId>
     <packaging>ear</packaging>
-    <name>Catalog of Сanonical Services, EAR</name>
+    <name>Catalog of Сanonical Services Enterprise Application</name>
 
     <dependencies>
+        <!-- ws gateway -->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>ccstest-ws-gateway-war</artifactId>
@@ -21,10 +22,11 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>ccstest-ws-gateway</artifactId>
+            <artifactId>ccstest-ws-gateway-iface</artifactId>
             <version>${project.version}</version>
         </dependency>
 
+        <!-- external auth stub -->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>ccstest-ext-auth-ejb</artifactId>
@@ -32,6 +34,7 @@
             <type>ejb</type>
         </dependency>
 
+        <!-- customer JCA adapter -->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>ccstest-customer-adapter-rar</artifactId>
@@ -44,6 +47,7 @@
             <version>${project.version}</version>
         </dependency>
 
+        <!-- personal account JCA adapter -->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>ccstest-personal-account-adapter-rar</artifactId>
@@ -56,10 +60,49 @@
             <version>${project.version}</version>
         </dependency>
 
+        <!-- libraries -->
+        <!-- ccstest -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>ccstest-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <!-- camel -->
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-core</artifactId>
+            <version>${ccstest.camel.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-cxf</artifactId>
+            <version>${ccstest.camel.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.apache.camel</groupId>
             <artifactId>camel-jms</artifactId>
             <version>${ccstest.camel.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-script</artifactId>
+            <version>${ccstest.camel.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-jaxb</artifactId>
+            <version>${ccstest.camel.version}</version>
+        </dependency>
+        <!-- other -->
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${ccstest.guava.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.2.2</version>
         </dependency>
     </dependencies>
 
@@ -70,7 +113,8 @@
                 <artifactId>maven-ear-plugin</artifactId>
                 <version>2.7</version>
                 <configuration>
-                    <outputDirectory>/home/alexey/apps/esb/wls1036/wlserver/samples/domains/wl_server/autodeploy</outputDirectory>
+                    <outputDirectory>/home/alexey/apps/esb/wls1036/wlserver/samples/domains/wl_server/autodeploy
+                    </outputDirectory>
                     <defaultLibBundleDir>lib</defaultLibBundleDir>
                 </configuration>
             </plugin>

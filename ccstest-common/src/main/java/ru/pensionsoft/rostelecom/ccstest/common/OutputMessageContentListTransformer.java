@@ -1,14 +1,26 @@
 package ru.pensionsoft.rostelecom.ccstest.common;
 
+import org.apache.camel.Handler;
 import org.apache.cxf.message.MessageContentsList;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
- * User: alexey
+ * Adapter for output CXF messages declared as {@code <soap:body use="literal"/>}.
+ * Wraps POJO message in {@code MessageContentsList}
+ *
+ * @author alexey
  * Date: 9/16/12
+ * @see InputMessageContentListTransformer
  */
 public class OutputMessageContentListTransformer {
-    public MessageContentsList transform(Object obj) {
-        // todo: nullability checks
-        return new MessageContentsList(obj);
+    /**
+     * @param payload output message payload for CXF
+     * @return payload wrapped into {@code MessageContentsList}
+     */
+    @Handler
+    public MessageContentsList transform(Object payload) {
+        checkNotNull(payload, "Provided payload is null");
+        return new MessageContentsList(payload);
     }
 }

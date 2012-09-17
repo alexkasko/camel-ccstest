@@ -13,10 +13,10 @@
         <ccstest.spring.version>3.0.7.RELEASE</ccstest.spring.version>
         <ccstest.camel.version>2.9.3</ccstest.camel.version>
         <ccstest.cxf.version>2.5.5</ccstest.cxf.version>
+        <ccstest.guava.version>13.0</ccstest.guava.version>
     </properties>
 
     <modules>
-        <module>ccstest-ws-gateway</module>
         <module>ccstest-ext-auth-iface</module>
         <module>ccstest-ext-auth-ejb</module>
         <module>ccstest-customer-adapter</module>
