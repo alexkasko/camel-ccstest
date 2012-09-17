@@ -15,6 +15,12 @@
     <dependencies>
         <!-- provided -->
         <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>ccstest-ws-gateway-iface</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>org.apache.cxf</groupId>
             <artifactId>cxf-api</artifactId>
             <version>${ccstest.cxf.version}</version>

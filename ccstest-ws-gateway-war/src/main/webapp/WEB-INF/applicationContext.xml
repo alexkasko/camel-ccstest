@@ -3,9 +3,8 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:jee="http://www.springframework.org/schema/jee"
-       xmlns:cm="http://camel.apache.org/schema/spring"
        xmlns:cxf="http://camel.apache.org/schema/cxf"
-       xmlns:foo="http://pensionsoft.ru/schemas/rostelecom/ccstest/"
+       xmlns:ccs="http://pensionsoft.ru/schemas/rostelecom/ccstest/"
        xsi:schemaLocation="
            http://www.springframework.org/schema/beans
            http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
@@ -16,12 +15,20 @@
            http://camel.apache.org/schema/spring
            http://camel.apache.org/schema/spring/camel-spring.xsd
            http://camel.apache.org/schema/cxf
-           http://camel.apache.org/schema/cxf/camel-cxf.xsd">
+           http://camel.apache.org/schema/cxf/camel-cxf.xsd
+           http://pensionsoft.ru/schemas/rostelecom/ccstest/
+           http://pensionsoft.ru/schemas/rostelecom/ccstest/ccstest-1.0.xsd">
 
     <!-- spring -->
     <context:component-scan base-package="ru.pensionsoft.rostelecom.ccstest.gateway" use-default-filters="false">
         <context:include-filter type="annotation" expression="org.springframework.stereotype.Service"/>
     </context:component-scan>
+
+    <!-- JMS-->
+    <import resource="classpath:META-INF/ccstest/jms-ctx.xml"/>
+
+    <!-- JAXB -->
+    <import resource="classpath:META-INF/ccstest/jaxb-ctx.xml"/>
 
     <!-- cxf -->
     <import resource="classpath:META-INF/cxf/cxf.xml"/>
@@ -29,31 +36,10 @@
     <cxf:cxfEndpoint id="customerCurrentBalanceEndpoint"
                      address="/CustomerCurrentBalanceService"
                      serviceClass="ru.pensionsoft.schemas.rostelecom.ccstest.CustomerCurrentBalancePortType"
-                     serviceName="foo:CustomerCurrentBalanceService"
+                     serviceName="ccs:CustomerCurrentBalanceService"
                      wsdlURL="classpath:/wsdl/ccstest.wsdl"/>
     <bean id="inputMessageContentListTransformer" class="ru.pensionsoft.rostelecom.ccstest.common.InputMessageContentListTransformer"/>
     <bean id="outputMessageContentListTransformer" class="ru.pensionsoft.rostelecom.ccstest.common.OutputMessageContentListTransformer"/>
-
-    <!-- JMS -->
-    <jee:jndi-lookup id="jmsConnectionFactory" jndi-name="weblogic.examples.ejb30.QueueConnectionFactory" />
-    <bean id="jms" class="org.apache.camel.component.jms.JmsComponent">
-        <property name="connectionFactory" ref="jmsConnectionFactory"/>
-        <property name="destinationResolver">
-            <bean id="jmsDestinationResolver" class="org.springframework.jms.support.destination.JndiDestinationResolver">
-                <property name="jndiTemplate">
-                    <bean id="jndiTemplate" class="org.springframework.jndi.JndiTemplate"/>
-                </property>
-            </bean>
-        </property>
-    </bean>
-
-    <!-- JAXB -->
-    <bean id="jaxbInput" class="ru.pensionsoft.rostelecom.ccstest.common.JaxbDataFormatFactory">
-        <constructor-arg value="ru.pensionsoft.schemas.rostelecom.ccstest.CustomerCurrentBalanceRqType"/>
-    </bean>
-    <bean id="jaxbOutput" class="ru.pensionsoft.rostelecom.ccstest.common.JaxbDataFormatFactory">
-        <constructor-arg value="ru.pensionsoft.schemas.rostelecom.ccstest.CustomerCurrentBalanceRsType"/>
-    </bean>
 
     <!-- Camel -->
     <!-- components -->
@@ -63,15 +49,16 @@
     <jee:remote-slsb id="externalAuthorizationService"
                      business-interface="ru.pensionsoft.rostelecom.ccstest.ext.auth.ExternalAuthorizationService"
                      jndi-name="externalAuthorizationService#ru.pensionsoft.rostelecom.ccstest.ext.auth.ExternalAuthorizationService"/>
+
     <!-- route -->
     <camelContext id="camel" xmlns="http://camel.apache.org/schema/spring">
-        <route>
+        <route handleFault="true">
+            <!-- receive WS message -->
             <from uri="cxf:bean:customerCurrentBalanceEndpoint"/>
             <bean ref="inputMessageContentListTransformer"/>
+            <!-- header enrichment from content -->
             <setHeader headerName="ccstest_systemId"><simple>${body.context.systemId}</simple></setHeader>
             <setHeader headerName="ccstest_userLogin"><simple>${body.context.userLogin}</simple></setHeader>
-            <enrich uri="bean:externalAuthorizationService?method=roles(${header.ccstest_systemId},${header.ccstest_userLogin})"
-                    strategyRef="jsonHeaderAggregationStrategy"/>
             <setHeader headerName="ccstest_content">
                 <javaScript>(function() {
                     if(request.body.customerEntityId) return 'customer'
@@ -79,26 +66,32 @@
                     return 'UNKNOWN'
                 })()</javaScript>
             </setHeader>
-            <marshal ref="jaxbInput"/>
+            <!-- authorization enrichment -->
+            <enrich uri="bean:externalAuthorizationService?method=roles(${header.ccstest_systemId},${header.ccstest_userLogin})"
+                    strategyRef="jsonHeaderAggregationStrategy"/>
+            <!-- content (header) based routing -->
             <choice>
                 <when>
-                    <simple>${header[ccstest_content]} == 'customer'</simple>
-                    <inOut uri="jms:customerQueue"/>
-                    <unmarshal ref="jaxbOutput"/>
-                    <bean ref="outputMessageContentListTransformer"/>
+                    <simple>${headers[ccstest_content]} == 'customer'</simple>
+                    <marshal ref="jaxbInputFormat"/>
+                    <!-- send to remote adapter synchronously -->
+                    <inOut uri="jms:jms/customerQueue"/>
+                    <unmarshal ref="jaxbOutputFormat"/>
                 </when>
                 <when>
-                    <simple>${header[ccstest_content]} == 'personal_account'</simple>
-                    <inOut uri="jms:personalAccountQueue"/>
-                    <unmarshal ref="jaxbOutput"/>
-                    <bean ref="outputMessageContentListTransformer"/>
+                    <simple>${headers[ccstest_content]} == 'personal_account'</simple>
+                    <marshal ref="jaxbInputFormat"/>
+                    <!-- send to remote adapter synchronously -->
+                    <inOut uri="jms:jms/personalAccountQueue"/>
+                    <unmarshal ref="jaxbOutputFormat"/>
                 </when>
                 <otherwise>
-                    <unmarshal ref="jaxbInput"/>
-                    <bean ref="outputMessageContentListTransformer"/>
+                    <setFaultBody>
+                        <simple>Cannot find rout for message: ${body}</simple>
+                    </setFaultBody>
                 </otherwise>
             </choice>
-
+            <bean ref="outputMessageContentListTransformer"/>
         </route>
     </camelContext>
 

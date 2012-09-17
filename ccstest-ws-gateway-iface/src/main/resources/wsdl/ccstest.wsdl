@@ -8,16 +8,12 @@
                 targetNamespace="http://pensionsoft.ru/schemas/rostelecom/ccstest/"
                 xsi:schemaLocation="
                            http://pensionsoft.ru/schemas/rostelecom/ccstest/
-                           ccstest.xsd">
-                <!-- todo: fix url -->
+                           http://pensionsoft.ru/schemas/rostelecom/ccstest/ccstest-1.0.xsd">
     <ws:types>
         <xs:schema targetNamespace="http://pensionsoft.ru/schemas/rostelecom/ccstest/">
-            <!-- todo: check whether need it -->
-            <xs:include schemaLocation="ccstest.xsd"/>
+            <xs:include schemaLocation="ccstest-1.0.xsd"/>
             <xs:element name="CustomerCurrentBalanceRq" type="tns:CustomerCurrentBalanceRqType"/>
             <xs:element name="CustomerCurrentBalanceRs" type="tns:CustomerCurrentBalanceRsType"/>
-            <!-- todo: check whether need it, SOAPFault -->
-            <xs:element name="Fault" type="tns:FaultType"/>
         </xs:schema>
     </ws:types>
 
@@ -27,15 +23,11 @@
     <ws:message name="CustomerCurrentBalanceRs">
         <ws:part name="response" element="tns:CustomerCurrentBalanceRs"/>
     </ws:message>
-    <ws:message name="CustomerCurrentBalanceFault">
-        <ws:part name="fault" element="tns:Fault"/>
-    </ws:message>
 
     <ws:portType name="CustomerCurrentBalancePortType">
         <ws:operation name="CustomerCurrentBalance">
             <ws:input message="tns:CustomerCurrentBalanceRq"/>
             <ws:output message="tns:CustomerCurrentBalanceRs"/>
-            <ws:fault name="Fault" message="tns:CustomerCurrentBalanceFault"/>
         </ws:operation>
     </ws:portType>
 

@@ -1,0 +1,100 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:tns="http://pensionsoft.ru/schemas/rostelecom/ccstest/"
+           targetNamespace="http://pensionsoft.ru/schemas/rostelecom/ccstest/">
+
+    <xs:annotation>
+        <xs:documentation>Описание типов данных каталога канонических сервисов</xs:documentation>
+    </xs:annotation>
+
+    <xs:simpleType name="MoneyType">
+        <xs:annotation>
+            <xs:documentation>Описывает значение денежный средств</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:decimal">
+            <xs:fractionDigits value="2"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:complexType name="EntityType" abstract="true">
+        <xs:annotation>
+            <xs:documentation>Описывает структуру, содержащую данные о cущности (идентификаторе) клиента</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="entityId" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Идентификатор сущности</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="CustomerEntityType">
+        <xs:annotation>
+            <xs:documentation>Описывает структуру, содержащую данные о используемой в домене Customer</xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="tns:EntityType"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="PersonalAccountEntityType">
+        <xs:annotation>
+            <xs:documentation>Описывает структуру, содержащую данные о используемой в домене Customer</xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="tns:EntityType"/>
+        </xs:complexContent>
+    </xs:complexType>
+    
+    <xs:complexType name="ContextType">
+        <xs:annotation>
+            <xs:documentation>Описывает структуру, содержащую данные о контексте вызова методов ESB</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="userLogin" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Логин оператора, вызывающего метод ESB</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="systemId" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Идентификатор системы, вызывающей методы ESB</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="CustomerCurrentBalanceRqType">
+        <xs:annotation>
+            <xs:documentation>Входные параметры для запроса текущего баланса абонента</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:choice>
+                <xs:annotation>
+                    <xs:documentation>Идентификатор клиента</xs:documentation>
+                </xs:annotation>
+                <xs:element name="customerEntityId" type="tns:CustomerEntityType"/>
+                <xs:element name="personalAccountEntityId" type="tns:PersonalAccountEntityType"/>
+            </xs:choice>
+            <xs:element name="context" type="tns:ContextType">
+                <xs:annotation>
+                    <xs:documentation>Контекст вызова</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="CustomerCurrentBalanceRsType">
+        <xs:annotation>
+            <xs:documentation>Выходные параметры для запроса текущего баланса абонента</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="amount" type="tns:MoneyType">
+                <xs:annotation>
+                    <xs:documentation>Баланс клиента в АСР</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>
