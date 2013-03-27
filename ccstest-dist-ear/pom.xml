@@ -113,8 +113,6 @@
                 <artifactId>maven-ear-plugin</artifactId>
                 <version>2.7</version>
                 <configuration>
-                    <outputDirectory>/home/alexey/apps/esb/wls1036/wlserver/samples/domains/wl_server/autodeploy
-                    </outputDirectory>
                     <defaultLibBundleDir>lib</defaultLibBundleDir>
                 </configuration>
             </plugin>
