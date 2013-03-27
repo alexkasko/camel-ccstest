@@ -1,7 +1,7 @@
 Example of ESB application using Apache Camel
 =============================================
 
-[TODO:insert image here]()
+![app diagram](https://raw.github.com/alexkasko/camel-ccstest/master/ccstest-report-eng.png)
 
 License information
 -------------------
